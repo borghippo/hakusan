@@ -3,19 +3,31 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/borghippo/hakusan/generate"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 const numOptions = 5
 
-var ans, choices = generate.GenerateHiragana(numOptions)
+var (
+	ans, choices   = generate.GenerateHiragana(numOptions)
+	choiceStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
+	incorrectStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#fb4934")).Bold(true)
+	correctStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#b8bb26")).Bold(true)
+)
 
 type model struct {
 	cursor int
 	choice generate.HiraganaCharacter
+}
+
+func checkbox(label string, checked bool) string {
+	if checked {
+		return fmt.Sprintf("%s", choiceStyle.Render("[x] "+label))
+	}
+	return fmt.Sprintf("[ ] %s", label)
 }
 
 func (m model) Init() tea.Cmd {
@@ -52,21 +64,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := strings.Builder{}
-	s.WriteString(ans.Hiragana + "\n\n")
+	s := fmt.Sprintf("%s\n\n", ans.Hiragana)
 
 	for i := 0; i < len(choices); i++ {
 		if m.cursor == i {
-			s.WriteString("(•) ")
+			s += checkbox(choices[i].Latin, true)
 		} else {
-			s.WriteString("( ) ")
+			s += checkbox(choices[i].Latin, false)
 		}
-		s.WriteString(choices[i].Latin)
-		s.WriteString("\n")
+		s += "\n"
 	}
-	s.WriteString("\n(press q to quit)\n")
+	s += "\n(press q to quit)\n"
 
-	return s.String()
+	return fmt.Sprintf(s)
 }
 
 func main() {
@@ -82,9 +92,9 @@ func main() {
 	// Assert the final tea.Model to our local model and print the choice.
 	if m, ok := m.(model); ok && m.choice.Latin != "" {
 		if m.choice.Latin == ans.Latin {
-			fmt.Printf("\n---\nCorrect! %s is %s\n", m.choice.Hiragana, m.choice.Latin)
+			fmt.Printf("\n---\n%s %s is %s\n", correctStyle.Render("Correct!"), m.choice.Hiragana, m.choice.Latin)
 		} else {
-			fmt.Printf("\n---\nWrong... %s is %s\n", ans.Hiragana, ans.Latin)
+			fmt.Printf("\n---\n%s %s is %s\n", incorrectStyle.Render("Wrong..."), ans.Hiragana, ans.Latin)
 		}
 	}
 }

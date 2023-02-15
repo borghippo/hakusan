@@ -42,7 +42,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "enter":
-			// Send the choice on the channel and exit.
 			m.choice = choices[m.cursor]
 			return m, tea.Quit
 
@@ -82,14 +81,12 @@ func (m model) View() string {
 func main() {
 	p := tea.NewProgram(model{})
 
-	// Run returns the model as a tea.Model.
 	m, err := p.Run()
 	if err != nil {
 		fmt.Println("Oh no:", err)
 		os.Exit(1)
 	}
 
-	// Assert the final tea.Model to our local model and print the choice.
 	if m, ok := m.(model); ok && m.choice.Latin != "" {
 		if m.choice.Latin == ans.Latin {
 			fmt.Printf("\n---\n%s %s is %s\n", correctStyle.Render("Correct!"), m.choice.Hiragana, m.choice.Latin)

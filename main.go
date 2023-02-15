@@ -74,7 +74,7 @@ func (m model) View() string {
 		}
 		s += "\n"
 	}
-	s += "\n(press q to quit)\n"
+	s += "\n(press enter to choose)\n"
 
 	return fmt.Sprintf(s)
 }

@@ -21,7 +21,7 @@ func GenerateHiragana(options int) (HiraganaCharacter, []HiraganaCharacter) {
 		{"や", "ya"}, {"ゆ", "yu"}, {"よ", "yo"},
 		{"ら", "ra"}, {"り", "ri"}, {"る", "ru"}, {"れ", "re"}, {"ろ", "ro"},
 		{"わ", "wa"}, {"を", "o(wo)"},
-		{"", "n"},
+		{"ん", "n"},
 	}
 
 	if options > len(hiraganaCharacters) {
